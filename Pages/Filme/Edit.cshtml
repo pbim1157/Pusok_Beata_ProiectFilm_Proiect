@@ -1,0 +1,48 @@
+﻿@page
+@model Pusok_Beata_ProiectFilm.Pages.Filme.EditModel
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Edit</h1>
+
+<h4>Film</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Film.ID" />
+            <div class="form-group">
+                <label asp-for="Film.Titlu" class="control-label"></label>
+                <input asp-for="Film.Titlu" class="form-control" />
+                <span asp-validation-for="Film.Titlu" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Film.Regizor" class="control-label"></label>
+                <input asp-for="Film.Regizor" class="form-control" />
+                <span asp-validation-for="Film.Regizor" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Film.AnProductie" class="control-label"></label>
+                <input asp-for="Film.AnProductie" class="form-control" />
+                <span asp-validation-for="Film.AnProductie" class="text-danger"></span>
+            </div>
+            <label asp-for="Film.ProducatorID" class="control-label">Publisher Name</label>
+            <select asp-for="Film.ProducatorID" class="form-control" asp-items="ViewBag.ProducatorID"></select>
+            <span asp-validation-for="Film.ProducatorID" class="text-danger"></span>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-page="./Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
