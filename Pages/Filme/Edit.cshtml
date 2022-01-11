@@ -29,9 +29,35 @@
                 <input asp-for="Film.AnProductie" class="form-control" />
                 <span asp-validation-for="Film.AnProductie" class="text-danger"></span>
             </div>
-            <label asp-for="Film.ProducatorID" class="control-label">Publisher Name</label>
+            <label asp-for="Film.ProducatorID" class="control-label">Producator</label>
             <select asp-for="Film.ProducatorID" class="form-control" asp-items="ViewBag.ProducatorID"></select>
             <span asp-validation-for="Film.ProducatorID" class="text-danger"></span>
+            <div class="form-group">
+                <div class="table">
+                    <table>
+                        <tr>
+                            @{
+                                int cnt = 0;
+                                foreach (var cat in Model.AssignedCategoryDataList)
+                                {
+                                    if (cnt++ % 3 == 0)
+                                    {
+                                    @:</tr><tr>
+                                    }
+                                    @:<td>
+                                        <input type="checkbox"
+                                               name="selectedCategories"
+                                               value="@cat.GenID"
+                                               @(Html.Raw(cat.Assigned ? "checked=\"checked\"" : "")) />
+                                        @cat.GenID @: @cat.Nume
+                                    @:</td>
+                                }
+                            @:</tr>
+                            }
+
+                        </table>
+                </div>
+            </div>
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>

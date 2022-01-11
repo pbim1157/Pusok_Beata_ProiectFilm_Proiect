@@ -11,7 +11,7 @@ using Pusok_Beata_ProiectFilm.Models;
 
 namespace Pusok_Beata_ProiectFilm.Pages.Filme
 {
-    public class EditModel : PageModel
+    public class EditModel : FilmCategoriesPageModel
     {
         private readonly Pusok_Beata_ProiectFilm.Data.Pusok_Beata_ProiectFilmContext _context;
 
@@ -30,24 +30,45 @@ namespace Pusok_Beata_ProiectFilm.Pages.Filme
                 return NotFound();
             }
 
-            Film = await _context.Film.FirstOrDefaultAsync(m => m.ID == id);
+            Film = await _context.Film.Include(b => b.Producator).Include(b => b.GenuriFilm).ThenInclude(b => b.Gen).AsNoTracking().FirstOrDefaultAsync(m => m.ID == id);
 
             if (Film == null)
             {
                 return NotFound();
             }
+
+            //apelam PopulateAssignedCategoryData pentru o obtine informatiile necesare checkbox-
+            //urilor folosind clasa AssignedCategoryData
+            PopulateAssignedCategoryData(_context, Film);
             ViewData["ProducatorID"] = new SelectList(_context.Set<Producator>(), "ID", "NumeProducator");
             return Page();
         }
 
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://aka.ms/RazorPagesCRUD.
-        public async Task<IActionResult> OnPostAsync()
+        public async Task<IActionResult> OnPostAsync(int? id,string[] selectedGenuri)
         {
-            if (!ModelState.IsValid)
+            if (id == null)
             {
-                return Page();
+                return NotFound();
             }
+            var filmToUpdate = await _context.Film.Include(i => i.Producator).Include(i => i.GenuriFilm).ThenInclude(i => i.Gen).FirstOrDefaultAsync(s => s.ID == id);
+            if(filmToUpdate == null)
+            {
+                return NotFound();
+            }
+            if (await TryUpdateModelAsync<Film>(filmToUpdate,"Film",i => i.Titlu, i => i.Regizor,i => i.AnProductie, i => i.Producator))
+            {
+                UpdateFilmGenuri(_context, selectedGenuri, filmToUpdate);
+                await _context.SaveChangesAsync();
+                return RedirectToPage("./Index");
+            }
+            //Apelam UpdateFilmGenuri pentru a aplica informatiile din checkboxuri la entitatea Filme care
+            //este editata
+            UpdateFilmGenuri(_context, selectedGenuri, filmToUpdate);
+            PopulateAssignedCategoryData(_context, filmToUpdate);
+            return Page();
+
 
             _context.Attach(Film).State = EntityState.Modified;
 
