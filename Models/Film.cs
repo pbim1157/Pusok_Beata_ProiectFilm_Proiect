@@ -23,7 +23,7 @@ namespace Pusok_Beata_ProiectFilm.Models
 
         public string AnProductie { get; set; }
         public int ProducatorID { get; set; }
-        public Producator Producator { get; set; }//navigation property
+        public Producator Producator { get; set; } //navigation property   
         public ICollection<GenFilm> GenuriFilm { get; set; }
     }
 
